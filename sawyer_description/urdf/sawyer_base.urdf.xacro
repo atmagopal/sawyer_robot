@@ -28,13 +28,13 @@
         <color rgba=".2 .2 .2 1"/>
       </material>
     </visual>
-<xacro:unless value="$(arg gazebo)">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
-      <mass value="0.0001"/>
-      <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
-    </inertial>
-</xacro:unless>
+    <xacro:unless value="$(arg gazebo)">
+        <inertial>
+          <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
+          <mass value="0.0001"/>
+          <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+        </inertial>
+    </xacro:unless>
   </link>
 <xacro:if value="$(arg pedestal)">
   <link name="pedestal">
@@ -398,8 +398,8 @@
     <parent link="right_l5"/>
     <child link="right_l6"/>
     <axis xyz="0 0 1"/>
-<xacro:if value="$(arg gazebo)">
     <limit effort="9.0" lower="-3.14" upper="3.14" velocity="4.545"/>
+<xacro:if value="$(arg gazebo)">
     <dynamics damping="1.0" friction="0.5"/>
 </xacro:if>
 <xacro:unless value="$(arg gazebo)">

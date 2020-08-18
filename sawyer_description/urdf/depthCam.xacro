@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<robot name="depthCamMacro" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:macro name="depthCam" params="name parent xyz rpy">
+
+
+<!-- realsense camera_link -->
+
+<link name='${name}_link'>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<visual name='visual'>
+    <geometry>
+    <mesh filename="package://sawyer_description/meshes/realsense_camera/meshes/realsense.dae" />
+    </geometry>
+</visual>
+</link>
+
+
+<joint name='${name}_joint' type='fixed'>
+<origin xyz="${xyz}" rpy="${rpy}"/>
+<parent link="${parent}"/>
+<child link="${name}_link"/>
+</joint>
+
+<!-- fake tf for rtl_human_descriptor/transform.py -->
+<link name='${name}_depth_optical_frame'/>
+
+<joint name='${name}_dlink' type='fixed'>
+<origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+<parent link="${name}_link"/>
+<child link="${name}_depth_optical_frame"/>
+</joint>
+
+<!-- camera simulation -->
+<gazebo reference="${name}_link">
+    <sensor name="${name}" type="depth">
+        <update_rate>30.0</update_rate>
+        <camera name="${name}">
+            <horizontal_fov>${69.4*pi/180}</horizontal_fov>
+            <image>
+                <width>1920</width>
+                <height>1080</height>
+                <format>R8G8B8</format>
+            </image>
+            <clip>
+                <near>0.02</near>
+                <far>1000</far>
+            </clip>
+            <noise>
+                <type>gaussian</type>
+                <mean>0.0</mean>
+                <stddev>0.02</stddev>
+            </noise>
+        </camera>
+
+        <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so"><!-- Intel RealSense Depth Module D435 -->
+            <baseline>0.05</baseline>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>0.0</updateRate><!-- Keep this zero, update_rate in the parent <sensor> tag will control the frame rate. -->
+            <cameraName>/${name}</cameraName>
+            <imageTopicName>color/image_raw</imageTopicName>
+            <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+            <depthImageTopicName>aligned_depth_to_color/image_raw</depthImageTopicName>
+            <depthImageCameraInfoTopicName>aligned_depth_to_color/camera_info</depthImageCameraInfoTopicName>
+            <pointCloudTopicName>depth/points</pointCloudTopicName>
+            <frameName>camera_depth_optical_frame</frameName>
+            <pointCloudCutoff>0.1</pointCloudCutoff>
+            <pointCloudCutoffMax>8.0</pointCloudCutoffMax>
+            <distortionK1>0</distortionK1>
+            <distortionK2>0</distortionK2>
+            <distortionK3>0</distortionK3>
+            <distortionT1>0</distortionT1>
+            <distortionT2>0</distortionT2>
+            <CxPrime>0</CxPrime>
+            <Cx>0</Cx>
+            <Cy>0</Cy>
+            <focalLength>0</focalLength>
+            <hackBaseline>0.05</hackBaseline>
+        </plugin>
+    </sensor>
+</gazebo>
+
+</xacro:macro>
+
+</robot>
