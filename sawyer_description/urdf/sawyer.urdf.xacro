@@ -25,8 +25,8 @@
   </xacro:if>
   <!-- Depth Camera -->
   <xacro:if value="$(arg camera)">
-  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro"/>
-  <xacro:sensor_d435 name="camera" parent="right_hand" use_nominal_extrinsics="true">
+  <xacro:include filename="$(find sawyer_description)/urdf/_d435_mod.urdf.xacro"/>
+  <xacro:sensor_d435 name="camera" parent="right_hand" use_nominal_extrinsics="true" gazebo="$(arg gazebo)">
     <origin xyz="0 -0.075 0.09" rpy="0 ${-pi/2} ${pi/2}"/>
   </xacro:sensor_d435>
   </xacro:if>
