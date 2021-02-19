@@ -25,11 +25,44 @@
   </xacro:if>
   <!-- Depth Camera -->
   <xacro:if value="$(arg camera)">
+  <xacro:if value="$(arg gazebo)">
   <xacro:include filename="$(find sawyer_description)/urdf/_d435_mod.urdf.xacro"/>
+  
+  <!-- Hand camera -->
   <xacro:sensor_d435 name="camera" parent="right_hand" use_nominal_extrinsics="true" gazebo="$(arg gazebo)">
-    <origin xyz="0 -0.07 0.07" rpy="0 ${-pi/2} ${pi/2}"/>
+    <!-- <origin xyz="0 -0.07 0.07" rpy="0 ${-pi/2} ${pi/2}"/> -->
+    <origin xyz="0.055 -0.015 0.0950" rpy="0 ${-pi/2} ${pi}" />
+  </xacro:sensor_d435>
+  
+  <!-- Head camera -->
+  <xacro:sensor_d435 name="camera_head" parent="head" use_nominal_extrinsics="true" gazebo="$(arg gazebo)">
+    <origin xyz="0.06 0 0.204" rpy="0 ${pi/6} 0" />
   </xacro:sensor_d435>
   </xacro:if>
+  </xacro:if>
+
+  <link name="bigass_gripper">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.125"/>
+      <geometry>
+        <box size="0.10 0.15 0.2"/>
+      </geometry>
+      <material name="darkgray"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.125"/>
+      <geometry>
+        <box size="0.2 0.2 0.25"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.03"/>
+    <parent link="right_hand"/>
+    <child link="bigass_gripper"/>
+  </joint>
+
 
 <!--   <xacro:if value="$(arg camera)">
   <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro"/>
